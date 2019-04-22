@@ -9,16 +9,16 @@
 # 3) Need a way to retrieve more control data?
 
 # 4) manipulate dataframe to clean data
-        generate some summary stats?
-        print out boxplot  by genotype (wild type versus mutant) separated by sex
-        print out similar scatter plot?
+#        generate some summary stats?
+#        print out boxplot  by genotype (wild type versus mutant) separated by sex
+#        print out similar scatter plot?
 
 # continuous data, categorical data, time series data, image data
 
 
 
 # An input is requested (gene symbol) and stored in a variable
-marker_symbol = input ("Enter a gene symbol: ")
+#marker_symbol = input ("Enter a gene symbol: ")
 
 
 # is there a way to error check for a valid gene symbol?
@@ -28,7 +28,7 @@ marker_symbol = input ("Enter a gene symbol: ")
 # either get numFound="1" for success or numFound="0" for failure returns XML
 #these are human gene symbols though. close enough?
 
-print ("The symbol you entered is valid")
+# print ("The symbol you entered is valid")
 
 
 # this URL gets geno-pheno associations for Fbxo7
@@ -36,10 +36,12 @@ print ("The symbol you entered is valid")
 
 #retrieve json or csv? files for marker_symbol = Fbxo7
 
+
 import pandas as pd
 CSV_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:Fbxo7&rows=500&wt=csv&indent=1"
 df = pd.read_csv(CSV_URL)
 pd.unique(df['mp_term_name']).tolist()
+
 
 #pull out the mp terms for that gene to allow user input
 # select rows with percent_change != 0 or != Nan to pull out continuous data only?
