@@ -40,11 +40,14 @@
 import pandas as pd
 CSV_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:Fbxo7&rows=500&wt=csv&indent=1"
 df = pd.read_csv(CSV_URL)
+
 pd.unique(df['mp_term_name']).tolist()
 
 
 #pull out the mp terms for that gene to allow user input
 # select rows with percent_change != 0 or != Nan to pull out continuous data only?
+# df1 = df.dropna(subset=['effect_size']) does not get rid of "male infertility" which is categorical
+#df1 = df.dropna(subset=['percentage_change']) < that seems to work!
 
 #error check here to make sure some phenotype data is returned (will return an empty list)
 
