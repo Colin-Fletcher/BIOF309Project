@@ -17,37 +17,30 @@
 # An input is requested (gene symbol) and stored in a variable
 
 import pandas as pd
-marker_symbol = input ("Enter a gene symbol: ")
+marker_symbol = input("Enter a gene symbol: ")
 CSV_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + marker_symbol + "&rows=500&wt=csv&indent=1"
 df = pd.read_csv(CSV_URL)
+
+#df1 = df.dropna(subset=['percentage_change']) < that seems to work!
 
 if df.empty:
     print("Looks like that gene doesn't have available information. Try another gene or check your cAsE.")
 else:
-    print ("The symbol you entered is valid")
-Phenotypes = pd.unique(df['mp_term_name']).tolist()
-print(Phenotypes)
+    print("The symbol you entered is valid")
 
-PhenoTerm = input ("Select a phenotype for analysis:  ")
+pd.unique(df['mp_term_name']).tolist()
 
 
-#pull out the mp terms for that gene to allow user input
-# select rows with percent_change != 0 or != Nan to pull out continuous data only?
-# df1 = df.dropna(subset=['effect_size']) does not get rid of "male infertility" which is categorical
-#df1 = df.dropna(subset=['percentage_change']) < that seems to work!
-
-
-
-
+PhenoTerm = input("Select a phenotype for analysis:  ")
 
 #Use the mp_term_name to then retrieve the procedure ID and Colony_Id by filtering/slicing the dataframe:
 
-ParamId4Query = df.loc[df['mp_term_name'] ==  +PhenoTerm+, "parameter_stable_id"].iloc[0]
+ParamId4Query = df.loc[df['mp_term_name'] ==  PhenoTerm, "parameter_stable_id"].iloc[0]
 
 #print(ParamId4Query)
 # 'IMPC_HEM_002_001'
 
-ColonyId4Query = df.loc[df['mp_term_name'] ==  "decreased erythrocyte cell number", "colony_id"].iloc[0]
+ColonyId4Query = df.loc[df['mp_term_name'] ==  PhenoTerm, "colony_id"].iloc[0]
 # print(ColonyId4Query)
 #  'MEBV'
 
@@ -61,8 +54,8 @@ ColonyId4Query = df.loc[df['mp_term_name'] ==  "decreased erythrocyte cell numbe
 
 #combine parameter ID and Colony name to get the experimental data for plotting! now the http points to "experiment"
 
-CSV2_URL =  "https://www.ebi.ac.uk/mi/impc/solr/experiment/select?q=parameter_stable_id:IMPC_HEM_002_001%20AND%20colony_id:MEBV&rows=500&wt=csv&indent=true"
-
+CSV2_URL =  "https://www.ebi.ac.uk/mi/impc/solr/experiment/select?q=parameter_stable_id:" + ParamId4Query + "%20AND%20colony_id:" + ColonyId4Query + "&rows=500&wt=csv&indent=true"
+print(CSV2_URL)
 #insert rows=500 to be sure to get more than 10 rows! This *should* return all the KOs (14?) this http request pulls down the experimental data
 #how to retrieve more controls (this only gets colony littermate controls)?
 
