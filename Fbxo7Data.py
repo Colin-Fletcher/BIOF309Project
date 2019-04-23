@@ -14,34 +14,21 @@
 #        print out similar scatter plot?
 
 # continuous data, categorical data, time series data, image data
-
-
-
 # An input is requested (gene symbol) and stored in a variable
-#marker_symbol = input ("Enter a gene symbol: ")
-
-
-# is there a way to error check for a valid gene symbol?
-# http://rest.genenames.org/fetch/symbol/ZNF3
-
-#http://rest.genenames.org/search/symbol/KLF4"
-# either get numFound="1" for success or numFound="0" for failure returns XML
-#these are human gene symbols though. close enough?
-
-# print ("The symbol you entered is valid")
-
-
-# this URL gets geno-pheno associations for Fbxo7
-# https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:Fbxo7&rows=500&wt=csv&indent=1
-
-#retrieve json or csv? files for marker_symbol = Fbxo7
-
 
 import pandas as pd
-CSV_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:Fbxo7&rows=500&wt=csv&indent=1"
+marker_symbol = input ("Enter a gene symbol: ")
+CSV_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + marker_symbol + "&rows=500&wt=csv&indent=1"
 df = pd.read_csv(CSV_URL)
 
-pd.unique(df['mp_term_name']).tolist()
+if df.empty:
+    print("Looks like that gene doesn't have available information. Try another gene or check your cAsE.")
+else:
+    print ("The symbol you entered is valid")
+Phenotypes = pd.unique(df['mp_term_name']).tolist()
+print(Phenotypes)
+
+PhenoTerm = input ("Select a phenotype for analysis:  ")
 
 
 #pull out the mp terms for that gene to allow user input
@@ -49,13 +36,13 @@ pd.unique(df['mp_term_name']).tolist()
 # df1 = df.dropna(subset=['effect_size']) does not get rid of "male infertility" which is categorical
 #df1 = df.dropna(subset=['percentage_change']) < that seems to work!
 
-#error check here to make sure some phenotype data is returned (will return an empty list)
 
-#solicit user input to select a mp_term_name
+
+
 
 #Use the mp_term_name to then retrieve the procedure ID and Colony_Id by filtering/slicing the dataframe:
 
-ParamId4Query = df.loc[df['mp_term_name'] ==  "decreased erythrocyte cell number", "parameter_stable_id"].iloc[0]
+ParamId4Query = df.loc[df['mp_term_name'] ==  +PhenoTerm+, "parameter_stable_id"].iloc[0]
 
 #print(ParamId4Query)
 # 'IMPC_HEM_002_001'
