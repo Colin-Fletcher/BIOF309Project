@@ -18,18 +18,40 @@
 
 import pandas as pd
 marker_symbol = input("Enter a gene symbol: ")
+
+if any(x.isspace() for x in marker_symbol):
+    print("No spaces allowed, please re-enter.")
+# go back to beginning somehow    marker_symbol = input("Enter a gene symbol: ")
+
+if all(x.isalpha() or x.isnumeric() for x in marker_symbol):
+    print("Searching....")
+else:
+    print("Only alphanumeric characters, please re-enter.")
+    #erturn to beginning somehow
+
 CSV_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + marker_symbol + "&rows=500&wt=csv&indent=1"
 df = pd.read_csv(CSV_URL)
+# Do some more error checking at this stage!! Confirm that the correct gene is returned.
+AlleleFound = pd.unique(df['allele_symbol']).tolist()
+AlleleFound = str(AlleleFound)
+print("IMPC found this allele: " + AlleleFound)
 
 #df1 = df.dropna(subset=['percentage_change']) < that seems to work!
-
 if df.empty:
     print("Looks like that gene doesn't have available information. Try another gene or check your cAsE.")
+    # return to beginning
 else:
-    print("The symbol you entered is valid")
+    Dec = input("Proceed? Yes or Re-enter")
+    if Dec == Proceed:
+        continue
+
+    else:
+        return to beginning
+
+
+# if Y then continue, if Re-enter then return to top
 
 pd.unique(df['mp_term_name']).tolist()
-
 
 PhenoTerm = input("Select a phenotype for analysis:  ")
 
@@ -82,13 +104,7 @@ df3.info()
 
 #check that data_point and weight are FLOAT?
 
-# Need to merge the df into one set??
-#columns that are required for plotting:
-# 'date_of_experiment'
-#'data_point'
-#'sex'
-#'biological_sample_group'
-#'parameter_name'
+
 
 #Now do some analysis + plots
 #report the summary stats? see below...
