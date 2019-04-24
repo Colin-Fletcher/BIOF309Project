@@ -16,18 +16,28 @@
 # continuous data, categorical data, time series data, image data
 # An input is requested (gene symbol) and stored in a variable
 
+
 import pandas as pd
-marker_symbol = input("Enter a gene symbol: ")
 
-if any(x.isspace() for x in marker_symbol):
-    print("No spaces allowed, please re-enter.")
-# go back to beginning somehow    marker_symbol = input("Enter a gene symbol: ")
+while True:
+    marker_symbol = input("Please enter a gene symbol: ")
+    if any(x.isspace() for x in marker_symbol):
+        print("No spaces allowed, please re-enter.")
+        continue
 
-if all(x.isalpha() or x.isnumeric() for x in marker_symbol):
-    print("Searching....")
-else:
-    print("Only alphanumeric characters, please re-enter.")
-    #erturn to beginning somehow
+    if not all(x.isalnum() for x in marker_symbol):
+        print("Alphanumeric only please.")
+        continue
+    else:
+        break
+
+import pandas as pd
+
+CSV_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + marker_symbol + "&rows=500&wt=csv&indent=1"
+df = pd.read_csv(CSV_URL)
+AlleleFound = pd.unique(df['allele_symbol']).tolist()
+AlleleFound = str(AlleleFound)
+print("IMPC found this allele: " + AlleleFound)
 
 CSV_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + marker_symbol + "&rows=500&wt=csv&indent=1"
 df = pd.read_csv(CSV_URL)
@@ -41,7 +51,7 @@ if df.empty:
     print("Looks like that gene doesn't have available information. Try another gene or check your cAsE.")
     # return to beginning
 else:
-    Dec = input("Proceed? Yes or Re-enter")
+    Dec = input("Proceed? Yes or Re-enter:")
     if Dec == Proceed:
         continue
 
